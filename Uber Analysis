@@ -1,0 +1,111 @@
+# 1.Calculate the Total trips
+   select count(*) as Total_trips from trip_searches
+   where end_ride = 1
+
+# 2.Calculate the Total drivers
+   select count(distinct driverid) Total_drivers 
+   from trips
+
+# 3.what is the Total Earnings?
+   select sum(fare) as total_earnings 
+   from trips
+
+# 4.Total searches by Customers
+   select count(searches) as Total_searches 
+   from trip_searches
+   where searches = 1
+
+# 5.Total searches which got estimate!
+   select count(*) as searches_got_estimate
+   from trip_searches
+   where searches_got_estimate = 1
+
+# 6.Total OTP Entered
+   select count(*) as OTP_entered from trip_searches
+   where otp_entered = 1
+
+# 7.Average Distance per Trip
+   select round(avg(distance),0) as avg_distance
+   from trips
+
+# 8.Average fare per trip!
+   select round(avg(fare),0) as avg_fare 
+   from trips
+
+# 9.Which is most use payment method?
+ select method, count(*) as Total_uses from
+ (select t.faremethod, p.method  from trips as t
+ join payment as p
+ ON t.faremethod = p.id)as d
+ group by 1
+ order by 2 desc
+ limit  1
+
+# 10.Which location has the most numbers of trips?
+select assembly, count(*) as Total_trips from
+(select t.loc_from, a.assembly from trips as t
+join assembly as a
+ON t.loc_from = a.id)as d
+group by 1
+order by 2 desc
+limit 1
+
+# 11. Analyse the top 5 Earning Drivers
+select driverid, sum(fare) as Total_earnings 
+from trips
+group by 1
+order by 2 desc
+limit 5
+
+# 12.Which duration had a greater number of trips?
+select durations, count(*) as Total_trips from
+(select t.duration, d.duration as durations from trips as t
+join durations as d
+ON t.duration = d.id)as d
+group by 1
+order by 2 desc
+limit 1
+
+# 13. Which Driver Customers pairs have more orders?
+select driverid, custid, count(*) AS Total_trips from trips
+group by 1,2
+order by 3 desc
+limit 1
+
+# 14. Which area got highest trip in which duration?
+select assembly, duration, count(*) as Total_trips from
+(select a.assembly, d.duration from trips as t
+join assembly as a 
+ON t.loc_from = a.id
+join durations as d
+ON t.duration = d.id)as f
+group by 1,2 
+order by 3 desc
+limit 1
+
+# 15.Which area got the highest fares, cancellation trip?
+-select a.assembly, sum(t.fare) as fares from trips as t
+ join assembly as a
+ ON a.id = t.loc_from
+ group by 1
+ order by 2 desc
+ limit 1
+-select assembly, count(*) as Total_cancellation_trips from
+(select a.assembly, t.customer_not_cancelled from trip_searches as t
+join assembly as a
+ON a.id = t.loc_from)as f
+where customer_not_cancelled = 0
+group by 1
+order by 2 desc
+limit 1
+
+# 16. Total DIstance Traveled by all Cabs
+select sum(distance) as Total_distance_traveled
+from trips
+
+
+
+
+
+
+
